@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo_pagina }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f7f6; }
+        h1 { color: #333; text-align: center; margin-bottom: 30px; }
+        .chart-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .chart-box {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: calc(50% - 20px); /* Para dos columnas */
+            min-width: 300px; /* Ancho mínimo para buena visualización */
+            box-sizing: border-box;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+        @media (max-width: 768px) {
+            .chart-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>{{ titulo_pagina }}</h1>
+
+    <div class="chart-container">
+        <div class="chart-box">
+            <h2>Ventas por Mes</h2>
+            <canvas id="barChart"></canvas>
+        </div>
+
+        <div class="chart-box">
+            <h2>Distribución de Productos</h2>
+            <canvas id="pieChart"></canvas>
+        </div>
+
+        <div class="chart-box">
+            <h2>Crecimiento de Usuarios</h2>
+            <canvas id="lineChart"></canvas>
+        </div>
+    </div>
+
+    {{ ventas_meses|json_script:"ventas_meses_data" }}
+    {{ ventas_valores|json_script:"ventas_valores_data" }}
+    {{ productos_nombres|json_script:"productos_nombres_data" }}
+    {{ productos_porcentajes|json_script:"productos_porcentajes_data" }}
+    {{ usuarios_fechas|json_script:"usuarios_fechas_data" }}
+    {{ usuarios_cantidad|json_script:"usuarios_cantidad_data" }}
+
+    <script>
+        // Extracción de los datos de los scripts generados por json_script
+        // IMPORTANTE: Asegúrate de que el ID en getElementById() coincide exactamente
+        // con el ID que le diste a json_script arriba.
+        const barLabels = JSON.parse(document.getElementById('ventas_meses_data').textContent);
+        const barData = JSON.parse(document.getElementById('ventas_valores_data').textContent);
+        const pieLabels = JSON.parse(document.getElementById('productos_nombres_data').textContent);
+        const pieData = JSON.parse(document.getElementById('productos_porcentajes_data').textContent);
+        const lineLabels = JSON.parse(document.getElementById('usuarios_fechas_data').textContent);
+        const lineData = JSON.parse(document.getElementById('usuarios_cantidad_data').textContent);
+
+
+        // Gráfico de Barras
+        const barCtx = document.getElementById('barChart').getContext('2d');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: barLabels,
+                datasets: [{
+                    label: 'Ventas ($)',
+                    data: barData,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Torta
+        const pieCtx = document.getElementById('pieChart').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'pie',
+            data: {
+                labels: pieLabels,
+                datasets: [{
+                    label: 'Porcentaje',
+                    data: pieData,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)',
+                        'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)',
+                        'rgba(75, 192, 192, 0.7)'
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+            }
+        });
+
+        // Gráfico de Líneas
+        const lineCtx = document.getElementById('lineChart').getContext('2d');
+        new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: lineLabels,
+                datasets: [{
+                    label: 'Cantidad de Usuarios',
+                    data: lineData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.4)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
