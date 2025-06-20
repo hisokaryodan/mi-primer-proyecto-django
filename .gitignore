@@ -1,0 +1,36 @@
+# Archivos del sistema
+.DS_Store
+
+# Archivos de Python
+*.pyc
+*.pyd
+*.pyo
+__pycache__/
+
+# Entornos virtuales
+env/
+venv/
+.venv/
+*.egg-info/
+
+# Base de datos SQLite
+db.sqlite3
+*.sqlite3
+
+# Media y estáticos generados
+/media
+/static_root # Si lo usas para collectstatic
+
+# Archivos de configuración sensibles (¡NO SUBIR NUNCA!)
+.env # Archivos de entorno si los usas para variables secretas
+*/local_settings.py # Si tienes un archivo de configuracion local
+
+# IDEs y editores
+.vscode/ # Configuración de VS Code (opcional, si no quieres compartirla)
+.idea/ # Directorios de PyCharm
+
+# Archivos de registro
+*.log
+
+# Directorios de npm/yarn/etc. (si usas frontend)
+node_modules/
