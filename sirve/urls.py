@@ -19,5 +19,7 @@ from django.contrib import admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('mi_app_web.urls')),
+    path('', include('main_app.urls')), # <--- ¡Revisa que esta línea sea EXACTA!
+    path('dashboard/', include('mi_app_web.urls')),
+    path('data/', include('data_loader.urls')),
 ]

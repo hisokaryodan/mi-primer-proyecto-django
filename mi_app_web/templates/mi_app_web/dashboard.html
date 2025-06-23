@@ -34,9 +34,37 @@
                 width: 100%;
             }
         }
+
+        /* NUEVO CÓDIGO: Estilos para el botón "Volver" */
+        .back-button-container {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+        .back-button {
+            display: inline-block;
+            padding: 10px 25px;
+            font-size: 1.0em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #6c757d; /* Color gris para un botón "atrás" */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none; /* Quita el subrayado de los enlaces */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .back-button:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
+    <div class="back-button-container">
+        <a href="{% url 'home' %}" class="back-button">Volver a la Página Principal</a>
+    </div>
+
     <h1>{{ titulo_pagina }}</h1>
 
     <div class="chart-container">
@@ -95,6 +123,7 @@
                     borderColor: [
                         'rgba(255, 99, 132, 1)',
                         'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
                         'rgba(255, 206, 86, 1)',
                         'rgba(75, 192, 192, 1)',
                         'rgba(153, 102, 255, 1)',

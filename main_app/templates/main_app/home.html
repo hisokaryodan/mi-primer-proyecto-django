@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo_pagina }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 40px 60px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .header {
+            margin-bottom: 30px;
+        }
+        .logo {
+            width: 100px; /* Tamaño del logo */
+            height: auto;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #0056b3;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .button-group {
+            display: flex;
+            flex-direction: column; /* Botones apilados verticalmente */
+            gap: 15px; /* Espacio entre botones */
+            width: 100%;
+            max-width: 250px; /* Ancho máximo para los botones */
+            margin: 0 auto;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none; /* Para enlaces */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://via.placeholder.com/100x100?text=LOGO" alt="Logo de la Empresa" class="logo">
+            <h1>Bienvenido a {{ titulo_pagina }}</h1>
+        </div>
+
+        <div class="button-group">
+            <a href="{% url 'upload_csv' %}" class="button">Cargar</a>
+            <button class="button">Plantilla</button>
+            <a href="{% url 'dashboard_graficos' %}" class="button">Ver</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!-- data_loader/templates/data_loader/upload.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargar CSV</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 40px 60px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        h1 {
+            color: #0056b3;
+            font-size: 2.2em;
+            margin-bottom: 25px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px; /* Espacio entre elementos del formulario */
+        }
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+            text-align: left;
+            width: 100%; /* Ocupa todo el ancho */
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            padding: 8px;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box; /* Incluye padding y border en el width */
+        }
+        button[type="submit"] {
+            display: inline-block;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #28a745; /* Verde para enviar */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            width: 100%;
+            max-width: 200px;
+        }
+        button[type="submit"]:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+        .messages {
+            margin-top: 20px;
+            padding: 0;
+            list-style: none;
+            width: 100%;
+        }
+        .messages li {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            text-align: left;
+            font-size: 0.95em;
+        }
+        .messages .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .messages .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .messages .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 25px;
+            font-size: 1.0em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #6c757d; /* Color gris */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .back-button:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Cargar Datos CSV</h1>
+
+        <!-- Sección para mostrar mensajes de Django (éxito, error, etc.) -->
+        <ul class="messages">
+            {% if messages %}
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %} {# ¡MUY IMPORTANTE para la seguridad en formularios POST! #}
+            {{ form.as_p }} {# Renderiza los campos del formulario como párrafos #}
+            <button type="submit">Cargar CSV</button>
+        </form>
+        <a href="{% url 'home' %}" class="back-button">Volver a la Página Principal</a>
+    </div>
+</body>
+</html>

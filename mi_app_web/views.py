@@ -2,6 +2,7 @@
 
 from django.shortcuts import render
 from django.http import HttpResponse
+from data_loader.models import MonthlySalesData # <-- ¡Importa tu nuevo modelo!
 
 def vista_hola_mundo(request):
     return HttpResponse("<h1>¡Hola, soy tu primera vista en Django!</h1>")
@@ -10,18 +11,20 @@ def vista_acerca_de(request):
     return HttpResponse("<h2>Esta es la página 'Acerca de' de mi aplicación.</h2>")
 
 def dashboard_graficos(request):
-    # Datos de ejemplo para el gráfico de barras (Ventas por Mes)
-    ventas_meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun']
-    ventas_valores = [1200, 1900, 3000, 5000, 2300, 4000]
+    # NUEVO: Obtener datos de ventas desde la base de datos
+    # Ordena por el campo 'month' o 'id' para asegurar un orden consistente
+    sales_data_from_db = MonthlySalesData.objects.all().order_by('id') # Ordena por ID
 
-    # Datos de ejemplo para el gráfico de torta (Distribución de Productos)
+    # Prepara los datos para el gráfico de barras de Chart.js
+    ventas_meses = [data.month for data in sales_data_from_db]
+    ventas_valores = [data.sales for data in sales_data_from_db]
+
+    # Mantenemos los datos de ejemplo para otros gráficos que no están conectados a la DB aún
     productos_nombres = ['Laptop', 'Mouse', 'Teclado', 'Monitor']
-    productos_porcentajes = [40, 20, 25, 15] # Asegúrate de que sumen 100 o ajusta los valores
+    productos_porcentajes = [40, 20, 25, 15]
 
-    # Datos de ejemplo para un gráfico de líneas (Crecimiento de Usuarios)
     usuarios_fechas = ['2023-01', '2023-03', '2023-05', '2023-07', '2023-09', '2023-11', '2024-01']
     usuarios_cantidad = [100, 120, 150, 130, 180, 200, 250]
-
 
     context = {
         'ventas_meses': ventas_meses,
