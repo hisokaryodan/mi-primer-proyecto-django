@@ -35,11 +35,11 @@
             }
         }
 
-        /* NUEVO CÓDIGO: Estilos para el botón "Volver" */
+        /* Estilos para el botón "Volver" */
         .back-button-container {
             text-align: center;
-            margin-top: 30px;
-            margin-bottom: 20px;
+            margin-top: 10px; /* Reducido un poco */
+            margin-bottom: 10px;
         }
         .back-button {
             display: inline-block;
@@ -47,16 +47,54 @@
             font-size: 1.0em;
             font-weight: bold;
             color: #fff;
-            background-color: #6c757d; /* Color gris para un botón "atrás" */
+            background-color: #6c757d;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            text-decoration: none; /* Quita el subrayado de los enlaces */
+            text-decoration: none;
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
         .back-button:hover {
             background-color: #5a6268;
             transform: translateY(-2px);
+        }
+
+        /* NUEVO CÓDIGO: Estilos para el filtro de empresa */
+        .filter-container {
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .filter-container label {
+            font-weight: bold;
+            margin-right: 10px;
+            color: #495057;
+        }
+        .filter-container select {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            font-size: 1em;
+            background-color: #f8f9fa;
+        }
+        .filter-container button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .filter-container button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -67,40 +105,54 @@
 
     <h1>{{ titulo_pagina }}</h1>
 
+    <!-- NUEVO CÓDIGO: Filtro por empresa -->
+    <div class="filter-container">
+        <form method="get" action="{% url 'dashboard_graficos' %}">
+            <label for="company_filter">Filtrar por Empresa:</label>
+            <select name="company_id" id="company_filter" onchange="this.form.submit()">
+                <option value="">Todas las Empresas</option>
+                {% for company in all_companies %}
+                    <option value="{{ company.id }}" {% if selected_company_id == company.id %}selected{% endif %}>
+                        {{ company.username }}
+                    </option>
+                {% endfor %}
+            </select>
+            {# Puedes añadir un botón si no quieres auto-submision onchange #}
+            {# <button type="submit">Aplicar Filtro</button> #}
+        </form>
+    </div>
+
     <div class="chart-container">
         <div class="chart-box">
-            <h2>Ventas por Mes</h2>
+            <h2>Cantidad de Material Reciclado por Tipo</h2>
             <canvas id="barChart"></canvas>
         </div>
 
         <div class="chart-box">
-            <h2>Distribución de Productos</h2>
+            <h2>Distribución Proporcional de Materiales</h2>
             <canvas id="pieChart"></canvas>
         </div>
 
         <div class="chart-box">
-            <h2>Crecimiento de Usuarios</h2>
+            <h2>Crecimiento de Usuarios (Ejemplo Estático)</h2>
             <canvas id="lineChart"></canvas>
         </div>
     </div>
 
-    {{ ventas_meses|json_script:"ventas_meses_data" }}
-    {{ ventas_valores|json_script:"ventas_valores_data" }}
-    {{ productos_nombres|json_script:"productos_nombres_data" }}
-    {{ productos_porcentajes|json_script:"productos_porcentajes_data" }}
-    {{ usuarios_fechas|json_script:"usuarios_fechas_data" }}
-    {{ usuarios_cantidad|json_script:"usuarios_cantidad_data" }}
+    {{ bar_labels|json_script:"bar_labels_data" }}
+    {{ bar_data|json_script:"bar_data_data" }}
+    {{ pie_labels|json_script:"pie_labels_data" }}
+    {{ pie_data|json_script:"pie_data_data" }}
+    {{ line_labels|json_script:"line_labels_data" }}
+    {{ line_data|json_script:"line_data_data" }}
 
     <script>
-        // Extracción de los datos de los scripts generados por json_script
-        // IMPORTANTE: Asegúrate de que el ID en getElementById() coincide exactamente
-        // con el ID que le diste a json_script arriba.
-        const barLabels = JSON.parse(document.getElementById('ventas_meses_data').textContent);
-        const barData = JSON.parse(document.getElementById('ventas_valores_data').textContent);
-        const pieLabels = JSON.parse(document.getElementById('productos_nombres_data').textContent);
-        const pieData = JSON.parse(document.getElementById('productos_porcentajes_data').textContent);
-        const lineLabels = JSON.parse(document.getElementById('usuarios_fechas_data').textContent);
-        const lineData = JSON.parse(document.getElementById('usuarios_cantidad_data').textContent);
+        const barLabels = JSON.parse(document.getElementById('bar_labels_data').textContent);
+        const barData = JSON.parse(document.getElementById('bar_data_data').textContent);
+        const pieLabels = JSON.parse(document.getElementById('pie_labels_data').textContent);
+        const pieData = JSON.parse(document.getElementById('pie_data_data').textContent);
+        const lineLabels = JSON.parse(document.getElementById('line_labels_data').textContent);
+        const lineData = JSON.parse(document.getElementById('line_data_data').textContent);
 
 
         // Gráfico de Barras
@@ -110,7 +162,7 @@
             data: {
                 labels: barLabels,
                 datasets: [{
-                    label: 'Ventas ($)',
+                    label: 'Cantidad Reciclada (kg)',
                     data: barData,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.6)',
@@ -118,16 +170,19 @@
                         'rgba(255, 206, 86, 0.6)',
                         'rgba(75, 192, 192, 0.6)',
                         'rgba(153, 102, 255, 0.6)',
-                        'rgba(255, 159, 64, 0.6)'
+                        'rgba(255, 159, 64, 0.6)',
+                        'rgba(100, 100, 100, 0.6)',
+                        'rgba(200, 150, 50, 0.6)'
                     ],
                     borderColor: [
                         'rgba(255, 99, 132, 1)',
                         'rgba(54, 162, 235, 1)',
                         'rgba(255, 206, 86, 1)',
-                        'rgba(255, 206, 86, 1)',
                         'rgba(75, 192, 192, 1)',
                         'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(100, 100, 100, 1)',
+                        'rgba(200, 150, 50, 1)'
                     ],
                     borderWidth: 1
                 }]
@@ -155,7 +210,11 @@
                         'rgba(255, 99, 132, 0.7)',
                         'rgba(54, 162, 235, 0.7)',
                         'rgba(255, 206, 86, 0.7)',
-                        'rgba(75, 192, 192, 0.7)'
+                        'rgba(75, 192, 192, 0.7)',
+                        'rgba(153, 102, 255, 0.7)',
+                        'rgba(255, 159, 64, 0.7)',
+                        'rgba(100, 100, 100, 0.7)',
+                        'rgba(200, 150, 50, 0.7)'
                     ],
                     borderColor: '#fff',
                     borderWidth: 2
@@ -166,7 +225,7 @@
             }
         });
 
-        // Gráfico de Líneas
+        // Gráfico de Líneas (Mantiene los datos de ejemplo)
         const lineCtx = document.getElementById('lineChart').getContext('2d');
         new Chart(lineCtx, {
             type: 'line',
